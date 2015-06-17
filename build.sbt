@@ -16,13 +16,13 @@ libraryDependencies ++= Seq(
 
 publishMavenStyle := true
 
-#publishTo := {
-#  val prefix = "https://oss.sonatype.org/"
-#  if (isSnapshot.value)
-#    Some("snapshots" at prefix + "content/repositories/snapshots")
-#  else
-#    Some("releases" at prefix +"service/local/staging/deploy/maven2")
-#}
+//publishTo := {
+//  val prefix = "https://oss.sonatype.org/"
+//  if (isSnapshot.value)
+//    Some("snapshots" at prefix + "content/repositories/snapshots")
+//  else
+//    Some("releases" at prefix +"service/local/staging/deploy/maven2")
+//}
 
 publishTo := Some(Resolver.file("file",  new File( "/var/www/repository" )) )
 
