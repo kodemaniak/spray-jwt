@@ -1,15 +1,9 @@
 package com.github.kikuomax.spray.jwt
 
-import com.nimbusds.jose.{
-  JWSAlgorithm,
-  JWSHeader,
-  JWSObject,
-  Payload
-}
-import com.nimbusds.jose.crypto.{
-  MACSigner,
-  MACVerifier
-}
+import java.security.interfaces.RSAPublicKey
+
+import com.nimbusds.jose._
+import com.nimbusds.jose.crypto.{RSASSAVerifier, RSASSASigner, MACSigner, MACVerifier}
 import com.nimbusds.jwt.JWTClaimsSet
 import java.text.ParseException
 import java.util.{
@@ -149,14 +143,6 @@ object JwtAuthorizationMagnet {
     JwtAuthorizationMagnet(privilege)
 }
 
-/**
- * Provides signature signer and verifier for JWS.
- *
- * @param algorithm
- *     The name of the signature algorithm.
- * @param secret
- *     The secret key for signature.
- */
 case class JwtSignature(algorithm: JWSAlgorithm, secret: String) {
   /** The common header of JWS objects. */
   private val header = new JWSHeader(algorithm)
@@ -177,6 +163,26 @@ case class JwtSignature(algorithm: JWSAlgorithm, secret: String) {
     jwsObject.sign(signer)
     jwsObject
   }
+
+  /**
+   * The implicit verifier for JWS objects.
+   *
+   * Verifies a given JWS object and returns a contained claim set.
+   */
+  implicit def jwtVerifier(token: JWSObject): Option[JWTClaimsSet] =
+    if (token.verify(verifier))
+      try
+        Option(JWTClaimsSet.parse(token.getPayload().toJSONObject()))
+      catch {
+        case _: ParseException => None
+      }
+    else
+      None
+}
+
+case class RsaSignature(algorithm: JWSAlgorithm, pk: RSAPublicKey) {
+  /** The common verifier for JWS objects. */
+  val verifier = new RSASSAVerifier(pk)
 
   /**
    * The implicit verifier for JWS objects.

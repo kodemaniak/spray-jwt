@@ -2,7 +2,7 @@ organization := "com.github.kikuomax"
 
 name         := "spray-jwt"
 
-version      := "0.0.1"
+version      := "0.0.2-cs1"
 
 crossScalaVersions := Seq("2.10.4", "2.11.4")
 
@@ -16,13 +16,15 @@ libraryDependencies ++= Seq(
 
 publishMavenStyle := true
 
-publishTo := {
-  val prefix = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at prefix + "content/repositories/snapshots")
-  else
-    Some("releases" at prefix +"service/local/staging/deploy/maven2")
-}
+#publishTo := {
+#  val prefix = "https://oss.sonatype.org/"
+#  if (isSnapshot.value)
+#    Some("snapshots" at prefix + "content/repositories/snapshots")
+#  else
+#    Some("releases" at prefix +"service/local/staging/deploy/maven2")
+#}
+
+publishTo := Some(Resolver.file("file",  new File( "/var/www/repository" )) )
 
 publishArtifact in Test := false
 
