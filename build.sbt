@@ -2,16 +2,16 @@ organization := "com.github.kikuomax"
 
 name         := "spray-jwt"
 
-version      := "0.0.2-cs1"
+version      := "0.0.2-cs2"
 
-crossScalaVersions := Seq("2.10.4", "2.11.4")
+crossScalaVersions := Seq("2.10.5", "2.11.6")
 
 scalacOptions := Seq("-unchecked", "-feature", "-deprecation", "-encoding", "utf8")
 
 libraryDependencies ++= Seq(
-  "io.spray"          %% "spray-routing"   % "1.3.2",
-  "com.typesafe.akka" %% "akka-actor"      % "2.3.8",
-  "com.nimbusds"      %  "nimbus-jose-jwt" % "3.5"
+  "io.spray"          %% "spray-routing"   % "1.3.3",
+  "com.typesafe.akka" %% "akka-actor"      % "2.3.11",
+  "com.nimbusds"      %  "nimbus-jose-jwt" % "3.9.2"
 )
 
 publishMavenStyle := true

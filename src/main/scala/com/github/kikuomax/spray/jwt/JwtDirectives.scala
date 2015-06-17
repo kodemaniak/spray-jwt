@@ -1,6 +1,9 @@
 package com.github.kikuomax.spray.jwt
 
+import java.io.StringReader
+import java.security.KeyFactory
 import java.security.interfaces.RSAPublicKey
+import java.security.spec.X509EncodedKeySpec
 
 import com.nimbusds.jose._
 import com.nimbusds.jose.crypto.{RSASSAVerifier, RSASSASigner, MACSigner, MACVerifier}
@@ -11,6 +14,8 @@ import java.util.{
   Date
 }
 import net.minidev.json.JSONObject
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.bouncycastle.util.io.pem.PemReader
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.Duration
 import scala.language.implicitConversions
@@ -178,6 +183,17 @@ case class JwtSignature(algorithm: JWSAlgorithm, secret: String) {
       }
     else
       None
+}
+
+object RsaSignature {
+  private lazy val factory = KeyFactory.getInstance("RSA", new BouncyCastleProvider())
+
+  def apply(algorithm: JWSAlgorithm, pemString: String): RsaSignature = {
+    val pk = new PemReader(new StringReader(pemString)).readPemObject()
+    val pubKeySpec = new X509EncodedKeySpec(pk.getContent)
+    val pub = factory.generatePublic(pubKeySpec).asInstanceOf[RSAPublicKey]
+    RsaSignature(JWSAlgorithm.RS256, pub)
+  }
 }
 
 case class RsaSignature(algorithm: JWSAlgorithm, pk: RSAPublicKey) {
